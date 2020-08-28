@@ -1,0 +1,38 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
+    }
+    dependencies {
+        classpath "io.eventuate.plugins.gradle:eventuate-plugins-gradle-publish:$eventuatePluginsGradleVersion"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
+    }
+}
+
+apply plugin: "io.eventuate.plugins.gradle.publish.EventuatePublish"
+
+subprojects {
+
+    apply plugin: "java"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            url "https://dl.bintray.com/eventuateio-oss/eventuate-maven-release"
+        }
+        eventuateMavenRepoUrl.split(',').each { repoUrl -> maven { url repoUrl } }
+    }
+
+    dependencies {
+        implementation(platform("net.chrisrichardson.examples.monolithic.customersandorders:modular-monolith-customers-and-orders-bom:$bomVersion"))
+    }
+}
+
+allprojects {
+    group = "net.chrisrichardson.examples.monolithic.customersandorders"
+}
